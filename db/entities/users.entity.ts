@@ -12,6 +12,21 @@ export type UserType = "admin" | "user";
 
 @Entity({ name: "users" }) // default name : userEntity
 export class UsersEntity extends SharedProp {
+  constructor(
+    firstName: string,
+    lastName: string,
+    email: string,
+    dateOfBirth?: Date,
+    type?: UserType
+  ) {
+    super();
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+    this.dateOfBirth = dateOfBirth;
+    this.type = type;
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 

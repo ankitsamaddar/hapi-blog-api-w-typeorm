@@ -1,10 +1,12 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import "colors";
 import { UsersEntity, PostsEntity } from "./entities";
+import { fakeUsers } from "./fakeData";
+import "colors";
 
 export const initDb = async (): Promise<DataSource> => {
   const entities = [UsersEntity, PostsEntity];
+  const fakeFuncs = [fakeUsers];
   const con = await new DataSource({
     type: "sqlite",
     database: "./hapi.db",
@@ -12,11 +14,18 @@ export const initDb = async (): Promise<DataSource> => {
   }).initialize();
   await con.synchronize(true);
   entities.forEach((entity) => console.log(`Created ${entity.name}`.blue));
+  console.log("Creating fake Data...".yellow.bold);
+  for (const func of fakeFuncs) {
+    await func(con);
+  }
+
   return con;
 };
 
 /*
-Each function in JS has some properties like
+NOTES ON JS :
+
+Each function in JS has some properties which can be accessed with dot notation like
 - name: the name of the function
 - length: the number of arguments the function takes
 - prototype: the prototype of the function
