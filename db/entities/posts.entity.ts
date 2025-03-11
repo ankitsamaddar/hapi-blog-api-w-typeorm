@@ -4,6 +4,13 @@ import { SharedProp } from './sharedProp.entity'
 
 @Entity({name: 'posts'})
 export class PostsEntity extends SharedProp {
+  constructor(title: string, content: string, user: UsersEntity) {
+    super();
+    this.title = title;
+    this.content = content;
+    this.user = user
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -16,7 +23,7 @@ export class PostsEntity extends SharedProp {
   @Column({name: 'user_id', nullable: false})
   userId: number;
 
-  
+
 
   @ManyToOne(() => UsersEntity, (user: UsersEntity) => user.posts)
   @JoinColumn({name: 'user_id'})

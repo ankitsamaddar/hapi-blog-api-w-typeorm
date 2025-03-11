@@ -1,12 +1,12 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { UsersEntity, PostsEntity } from "./entities";
-import { fakeUsers } from "./fakeData";
+import { fakeUsers, fakePosts } from "./fakeData";
 import "colors";
 
 export const initDb = async (): Promise<DataSource> => {
   const entities = [UsersEntity, PostsEntity];
-  const fakeFuncs = [fakeUsers];
+  const fakeFuncs = [fakeUsers, fakePosts];
   const con = await new DataSource({
     type: "sqlite",
     database: "./hapi.db",
