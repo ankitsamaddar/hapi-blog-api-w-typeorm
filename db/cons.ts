@@ -11,6 +11,8 @@ export const initDb = async (): Promise<DataSource> => {
     type: "sqlite",
     database: "./hapi.db",
     entities: entities,
+    // logging: ['error'],
+    // logger: "advanced-console",
   }).initialize();
   await con.synchronize(true);
   entities.forEach((entity) => console.log(`Created ${entity.name}`.blue));
