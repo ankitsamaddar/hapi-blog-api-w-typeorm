@@ -73,6 +73,7 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
         return userRepo.findOneBy({ id: Number(request.params.id) });
       },
     },
+    /*
     {
       method: "POST",
       path: "/users",
@@ -83,11 +84,14 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
           firstName,
           lastName,
           email,
+          password,
+          salt,
           dateOfBirth
         );
         return userRepo.save<Partial<UsersEntity>>(u);
       },
     },
+    */
     {
       method: "PATCH",
       path: "/users/{id}",
