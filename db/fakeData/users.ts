@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 const { person, internet, date, helpers } = faker;
 
-import {Condition, DataSource, Repository} from 'typeorm';
+import { DataSource, Repository} from 'typeorm';
 import {UsersEntity, UserType} from '../entities'
 import 'colors'
 import {get} from 'node-emoji'

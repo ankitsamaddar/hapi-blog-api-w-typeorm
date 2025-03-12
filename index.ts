@@ -3,7 +3,7 @@ import { Server, ResponseToolkit, Request } from "@hapi/hapi";
 import "colors";
 import { get } from "node-emoji";
 import { initDb } from "./db";
-import { userController } from "./controllers";
+import { userController, authController } from "./controllers";
 import { DataSource } from "typeorm";
 
 const init = async () => {
@@ -20,11 +20,11 @@ const init = async () => {
   //   },
   // });
 
-  const con: DataSource =   await initDb();
-  console.log(get('dvd'), 'DB init -> Done!', get('dvd'))
+  const con: DataSource = await initDb();
+  console.log(get("dvd"), "DB init -> Done!", get("dvd"));
 
   // Set the routes
-  server.route(userController(con));
+  server.route([...userController(con), ...authController(con)] as Array<Hapi.ServerRoute>);
 
   await server.start().then(() => {
     console.log(
