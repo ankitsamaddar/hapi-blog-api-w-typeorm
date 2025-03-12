@@ -8,8 +8,10 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
     {
       method: "GET",
       path: "/users",
-      handler: (request: Request, h: ResponseToolkit, err?: Error) => {
-        return userRepo.find();
+      handler: ({query}: Request, h: ResponseToolkit, err?: Error) => {
+        const options = {where: {... query}}
+        if(!query) delete options.where
+        return userRepo.find(options);
       },
     },
     {
