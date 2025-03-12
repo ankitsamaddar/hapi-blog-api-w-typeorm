@@ -55,9 +55,16 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
               }${qParams}`
             : null;
 
+        // Delete the hashed password and salt from data
+        let data = await userRepo.find(findOptions);
+        data.forEach((d: UsersEntity) => {
+          delete d.password;
+          delete d.salt;
+        });
+
         // Generate the response
         return {
-          data: await userRepo.find(findOptions),
+          data: data,
           perPage: realTake,
           page: +page || 1,
           totalPages: totalPages,
@@ -69,8 +76,21 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
     {
       method: "GET",
       path: "/users/{id}",
-      handler: (request: Request, h: ResponseToolkit, err?: Error) => {
-        return userRepo.findOneBy({ id: Number(request.params.id) });
+      handler: async (
+        { params: { id } }: Request,
+        h: ResponseToolkit,
+        err?: Error
+      ) => {
+        try {
+          let u = await userRepo.findOneBy({id: Number(id)});
+          delete u.password;
+          delete u.salt;
+
+          return u;
+
+        } catch(err) {
+          console.error("Error fetching user", err)
+        }
       },
     },
     /*
@@ -112,7 +132,13 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
 
         await userRepo.update(id, payload as Partial<UsersEntity>);
 
-        const updatedUser = await userRepo.findOneBy({ id: Number(id) });
+        let updatedUser: UsersEntity = await userRepo.findOneBy({
+          id: Number(id),
+        });
+
+        delete updatedUser.password;
+        delete updatedUser.salt;
+
         return updatedUser;
       },
     },
@@ -144,6 +170,11 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
             .execute();
 
           await userRepo.delete(id);
+
+          // Delete password and salt
+          delete u.password;
+          delete u.salt;
+
           return h
             .response({
               msg: "User And Records Deleted Successfully!",
