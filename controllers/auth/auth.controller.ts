@@ -10,8 +10,21 @@ export const authController = (con: DataSource): Array<ServerRoute> => {
   return [
     {
       method: "POST",
+      path: "/login",
+      handler: async ({auth: { credentials } }: Request) => {
+        console.log(credentials);
+        return { ...credentials, accessToken: sign({ ...credentials }, "getSecretFromEnvHere") };
+      },
+      options: {
+        auth: {
+          strategy: "simple",
+        },
+      },
+    },
+    {
+      method: "POST",
       path: "/register",
-      handler: async ({ payload }: Request) => {
+      handler: async ({ payload, auth: { credentials } }: Request) => {
         const { firstName, lastName, email, password, dateOfBirth } =
           payload as Partial<UsersEntity>;
         const salt = await genSalt();
@@ -40,7 +53,10 @@ export const authController = (con: DataSource): Array<ServerRoute> => {
             firstName: Joi.string().required().max(250).min(3),
             lastName: Joi.string().required().max(250).min(3),
             email: Joi.string().email().required(),
-            dateOfBirth: Joi.date().optional().min('1940-01-01').max('2015-01-01'),
+            dateOfBirth: Joi.date()
+              .optional()
+              .min("1940-01-01")
+              .max("2015-01-01"),
             password: Joi.string().required().min(5).max(15),
           }),
           // Throw proper error

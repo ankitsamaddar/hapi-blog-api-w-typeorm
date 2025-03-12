@@ -5,6 +5,7 @@ import { get } from "node-emoji";
 import { initDb } from "./db";
 import { userController, authController } from "./controllers";
 import { DataSource } from "typeorm";
+import { validateBasic } from "./auth";
 
 const init = async () => {
   const server: Server = Hapi.server({
@@ -22,6 +23,12 @@ const init = async () => {
 
   const con: DataSource = await initDb();
   console.log(get("dvd"), "DB init -> Done!", get("dvd"));
+
+  // Register the plugins
+  await server.register(require('@hapi/basic'));
+
+  // Auth strategy
+  server.auth.strategy('simple', 'basic', {validate: validateBasic(con)})
 
   // Set the routes
   server.route([...userController(con), ...authController(con)] as Array<Hapi.ServerRoute>);
