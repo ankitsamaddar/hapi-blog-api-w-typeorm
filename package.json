@@ -12,6 +12,7 @@
   "type": "commonjs",
   "dependencies": {
     "@hapi/hapi": "^21.4.0",
+    "bcryptjs": "^3.0.2",
     "colors": "^1.4.0",
     "node-emoji": "^2.2.0",
     "reflect-metadata": "^0.2.2",
