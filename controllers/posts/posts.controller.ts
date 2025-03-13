@@ -84,5 +84,80 @@ export const postController = (con: DataSource): Array<ServerRoute> => {
         },
       },
     },
+    {
+      method: "PATCH",
+      path: "/posts/{id}",
+      handler: async (
+        {
+          params: { id },
+          payload,
+          auth: {
+            credentials: { user },
+          },
+        }: Request,
+        h: ResponseToolkit
+      ) => {
+        try {
+          const post = await postRepo.findOne({ where: { id: Number(id) } });
+          if (!post) {
+            return h.response({ error: "Post not found" }).code(404);
+          }
+
+          if (
+            post.userId !== (user as UsersEntity).id &&
+            (user as UsersEntity).type !== "admin"
+          ) {
+            return h.response({ error: "Unauthorized User." }).code(403);
+          }
+
+          Object.keys(payload).forEach((key) => (post[key] = payload[key]));
+          await postRepo.save(post);
+          return post;
+        } catch (error) {
+          console.error(`Error patching the post`.red.bold, error);
+          return h.response({ error: "Internal Server Error" }).code(500);
+        }
+      },
+      options: {
+        auth: "jwt",
+      },
+    },
+    {
+      method: "DELETE",
+      path: "/posts/{id}",
+      handler: async (
+        {
+          params: { id },
+          auth: {
+            credentials: { user },
+          },
+        }: Request,
+        h: ResponseToolkit
+      ) => {
+        try {
+          const post = await postRepo.findOne({ where: { id: Number(id) } });
+
+          if (!post) {
+            return h.response({ error: "Post not found" }).code(404);
+          }
+
+          if (
+            post.userId !== (user as UsersEntity).id &&
+            (user as UsersEntity).type !== "admin"
+          ) {
+            return h.response({ error: "Unauthorized User." }).code(403);
+          }
+
+          await postRepo.remove(post);
+          return {msg: "Post Deleted Successfully", ...post};
+        } catch (error) {
+          console.error(`Error deleting the post`.red.bold, error);
+          return h.response({ error: "Internal Server Error" }).code(500);
+        }
+      },
+      options: {
+        auth: "jwt",
+      },
+    },
   ];
 };

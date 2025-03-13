@@ -9,18 +9,26 @@ export const initDb = async (): Promise<DataSource> => {
   const fakeFuncs = [fakeUsers, fakePosts];
   const con = await new DataSource({
     type: "sqlite",
-    database: "./hapi.db",
+    database: "./db/database/hapi.db",
     entities: entities,
     // logging: ['error'],
     // logger: "advanced-console",
   }).initialize();
   await con.synchronize(true);
-  entities.forEach((entity) => console.log(`Created ${entity.name}`.blue));
-  console.log("Creating fake Data...".yellow.bold);
-  for (const func of fakeFuncs) {
-    await func(con);
+
+  const userCount = await con.getRepository(UsersEntity).count();
+  const postCount = await con.getRepository(PostsEntity).count();
+
+  if (userCount ==  0 || postCount == 0) {
+    console.log("Creating fake Data...".yellow.bold);
+    for (const func of fakeFuncs) {
+      await func(con);
+    }
+  }else {
+    console.log("FakeData already exists, skipping...".green.bold);
   }
 
+  entities.forEach((entity) => console.log(`Created ${entity.name}`.blue));
   return con;
 };
 
