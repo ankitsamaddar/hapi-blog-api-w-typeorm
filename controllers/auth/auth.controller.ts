@@ -11,14 +11,33 @@ export const authController = (con: DataSource): Array<ServerRoute> => {
     {
       method: "POST",
       path: "/login",
-      handler: async ({auth: { credentials } }: Request) => {
+      handler: async ({ auth: { credentials } }: Request) => {
         console.log(credentials);
-        return { ...credentials, accessToken: sign({ ...credentials }, "getSecretFromEnvHere") };
+        return {
+          ...credentials,
+          accessToken: sign({ ...credentials }, "getSecretFromEnvHere"),
+        };
       },
       options: {
         auth: {
           strategy: "simple",
         },
+        validate: {
+          payload: Joi.object({
+            email: Joi.string().email().required(),
+            password: Joi.string().required().min(5).max(15),
+          }),
+          // Throw proper error
+          failAction: (request: Request, h: ResponseToolkit, err: Error) => {
+            throw err;
+          },
+          options: {
+            abortEarly: false, // to check and include all errors
+          },
+        },
+        description: "Login",
+        notes: "Logs in the user, returns a token",
+        tags: ["api", "users"],
       },
     },
     {
@@ -67,6 +86,9 @@ export const authController = (con: DataSource): Array<ServerRoute> => {
             abortEarly: false, // to check and include all errors
           },
         },
+        description: "Register",
+        notes: "Registers the user, returns a token",
+        tags: ["api", "users"],
       },
     },
   ];

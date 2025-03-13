@@ -1,14 +1,14 @@
 {
   "name": "hapi-w-typeorm",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "1.2.0",
+  "description": "A Hapi.js Blog backend with TypeORM integration",
+  "main": "index.ts",
   "scripts": {
     "dev": "ts-node-dev index.ts"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "dependencies": {
     "@hapi/basic": "^7.0.2",

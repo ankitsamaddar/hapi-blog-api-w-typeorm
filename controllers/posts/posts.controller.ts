@@ -1,6 +1,7 @@
 import { DataSource, Repository } from "typeorm";
 import { ServerRoute, ResponseToolkit, Request } from "@hapi/hapi";
 import { UsersEntity, PostsEntity } from "../../db/entities";
+import * as Joi from "joi";
 
 export const postController = (con: DataSource): Array<ServerRoute> => {
   const postRepo: Repository<PostsEntity> = con.getRepository(PostsEntity);
@@ -92,6 +93,19 @@ export const postController = (con: DataSource): Array<ServerRoute> => {
         auth: {
           strategy: "jwt",
         },
+        validate: {
+          payload: Joi.object({
+            title: Joi.string().required().max(250).min(3),
+            content: Joi.string().required().min(5),
+          }),
+          // Throw proper error
+          failAction: (request: Request, h: ResponseToolkit, err: Error) => {
+            throw err;
+          },
+          options: {
+            abortEarly: false, // to check and include all errors
+          },
+        },
         description: "Create a new post",
         notes: "Creates a new post and returns the created post details.",
         tags: ["api", "posts"],
@@ -133,6 +147,19 @@ export const postController = (con: DataSource): Array<ServerRoute> => {
       },
       options: {
         auth: "jwt",
+        validate: {
+          payload: Joi.object({
+            title: Joi.string().optional().max(250).min(3),
+            content: Joi.string().optional().min(5),
+          }),
+          // Throw proper error
+          failAction: (request: Request, h: ResponseToolkit, err: Error) => {
+            throw err;
+          },
+          options: {
+            abortEarly: false, // to check and include all errors
+          },
+        },
         description: "Update a post by id",
         notes:
           "Updates the post only for user create or admin and returns the updated post details.",

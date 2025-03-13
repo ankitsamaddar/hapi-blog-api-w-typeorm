@@ -1,6 +1,7 @@
 import { DataSource, Repository } from "typeorm";
 import { UsersEntity, PostsEntity } from "../../db/entities";
 import { ResponseToolkit, ServerRoute, Request } from "@hapi/hapi";
+import * as Joi from 'joi'
 
 export const userController = (con: DataSource): Array<ServerRoute> => {
   const userRepo: Repository<UsersEntity> = con.getRepository(UsersEntity);
@@ -154,6 +155,24 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
         return updatedUser;
       },
       options: {
+        validate: {
+          payload: Joi.object({
+            firstName: Joi.string().optional().max(250).min(3),
+            lastName: Joi.string().optional().max(250).min(3),
+            email: Joi.string().email().optional(),
+            dateOfBirth: Joi.date()
+              .optional()
+              .min("1940-01-01")
+              .max("2015-01-01"),
+          }),
+          // Throw proper error
+          failAction: (request: Request, h: ResponseToolkit, err: Error) => {
+            throw err;
+          },
+          options: {
+            abortEarly: false, // to check and include all errors
+          },
+        },
         description: "Update a user by id",
         notes:
           "Update the database with with the payload and returns the updted user details",
