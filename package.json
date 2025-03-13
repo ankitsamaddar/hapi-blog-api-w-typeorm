@@ -13,9 +13,12 @@
   "dependencies": {
     "@hapi/basic": "^7.0.2",
     "@hapi/hapi": "^21.4.0",
+    "@hapi/inert": "^7.1.0",
+    "@hapi/vision": "^7.0.3",
     "bcryptjs": "^3.0.2",
     "colors": "^1.4.0",
     "hapi-auth-jwt2": "^11.0.0",
+    "hapi-swagger": "^17.3.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "node-emoji": "^2.2.0",

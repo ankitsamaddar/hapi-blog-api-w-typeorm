@@ -43,6 +43,11 @@ export const postController = (con: DataSource): Array<ServerRoute> => {
           prev: prevPage,
         };
       },
+      options: {
+        description: "Get all posts",
+        notes: "Returns an array of posts with pagenation.",
+        tags: ["api", "posts"],
+      },
     },
     {
       method: "GET",
@@ -53,6 +58,11 @@ export const postController = (con: DataSource): Array<ServerRoute> => {
         });
 
         return post;
+      },
+      options: {
+        description: "Get a post by id",
+        notes: "Returns a post details by id.",
+        tags: ["api", "posts"],
       },
     },
     {
@@ -82,6 +92,9 @@ export const postController = (con: DataSource): Array<ServerRoute> => {
         auth: {
           strategy: "jwt",
         },
+        description: "Create a new post",
+        notes: "Creates a new post and returns the created post details.",
+        tags: ["api", "posts"],
       },
     },
     {
@@ -120,6 +133,10 @@ export const postController = (con: DataSource): Array<ServerRoute> => {
       },
       options: {
         auth: "jwt",
+        description: "Update a post by id",
+        notes:
+          "Updates the post only for user create or admin and returns the updated post details.",
+        tags: ["api", "posts"],
       },
     },
     {
@@ -149,7 +166,7 @@ export const postController = (con: DataSource): Array<ServerRoute> => {
           }
 
           await postRepo.remove(post);
-          return {msg: "Post Deleted Successfully", ...post};
+          return { msg: "Post Deleted Successfully", ...post };
         } catch (error) {
           console.error(`Error deleting the post`.red.bold, error);
           return h.response({ error: "Internal Server Error" }).code(500);
@@ -157,6 +174,10 @@ export const postController = (con: DataSource): Array<ServerRoute> => {
       },
       options: {
         auth: "jwt",
+        description: "Delete a post by id",
+        notes:
+          "Deletes the post only for user created or admin and returns the deleted post details.",
+        tags: ["api", "posts"],
       },
     },
   ];

@@ -76,6 +76,9 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
         auth: {
           strategy: "jwt",
         },
+        description: "Get all users",
+        notes: "Returns an array of users with pagenation.",
+        tags: ["api", "users"],
       },
     },
     {
@@ -95,6 +98,11 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
         } catch (err) {
           console.error("Error fetching user", err);
         }
+      },
+      options: {
+        description: "Get a user by id",
+        notes: "Returns a user details by id.",
+        tags: ["api", "users"],
       },
     },
     /*
@@ -145,6 +153,12 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
 
         return updatedUser;
       },
+      options: {
+        description: "Update a user by id",
+        notes:
+          "Update the database with with the payload and returns the updted user details",
+        tags: ["api", "users"],
+      },
     },
     {
       method: "DELETE",
@@ -189,6 +203,11 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
           console.error("Error deleting user:", error);
           return h.response({ message: "Internal Server Error" }).code(500);
         }
+      },
+      options: {
+        description: "Delete a user by id",
+        notes: "Delete the user and related records from the database",
+        tags: ["api", "users"],
       },
     },
   ];

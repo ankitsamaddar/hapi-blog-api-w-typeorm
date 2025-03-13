@@ -6,6 +6,11 @@ import { initDb } from "./db";
 import { userController, authController, postController } from "./controllers";
 import { DataSource } from "typeorm";
 import { validateBasic, validateJWT } from "./auth";
+import * as Package from "./package.json";
+// Hapi Packages
+import * as Vision from '@hapi/vision'
+import * as Inert from '@hapi/inert'
+import * as HapiSwagger from 'hapi-swagger'
 
 const init = async () => {
   const server: Server = Hapi.server({
@@ -27,6 +32,40 @@ const init = async () => {
   // Register the plugins
   await server.register(require('@hapi/basic'));
   await server.register(require('hapi-auth-jwt2'))
+  await server.register([
+    Inert,
+    Vision,
+    {
+      plugin: HapiSwagger,
+      options: {
+        info: {
+          title: "Blogs API Documentation",
+          description: "This is the API documentation for the Blogs API.",
+          version: Package.version,
+          contact: {
+            name: "Ankit Samaddar",
+            url: "https://ankitsamaddar.github.io",
+            email: "ankitsam0602@gmail.com",
+          },
+
+          license: {
+            name: "MIT",
+            url: "https://opensource.org/licenses/MIT",
+          },
+        },
+        tags: [
+          { name: "users", description: "User related endpoints" },
+          { name: "posts", description: "Post related endpoints" },
+        ],
+        documentationPath: "/docs",
+        jsonPath: "/swagger.json",
+        swaggerUIPath: "/swaggerui/",
+        schemes: ["http", "https"],
+        expanded: "list",
+        sortEndpoints: "ordered",
+      },
+    },
+  ]);
 
   // Auth strategy
   server.auth.strategy('simple', 'basic', {validate: validateBasic(con)})
