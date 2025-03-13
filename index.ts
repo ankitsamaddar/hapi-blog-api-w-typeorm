@@ -3,7 +3,7 @@ import { Server, ResponseToolkit, Request } from "@hapi/hapi";
 import "colors";
 import { get } from "node-emoji";
 import { initDb } from "./db";
-import { userController, authController } from "./controllers";
+import { userController, authController, postController } from "./controllers";
 import { DataSource } from "typeorm";
 import { validateBasic, validateJWT } from "./auth";
 
@@ -36,7 +36,7 @@ const init = async () => {
   });
 
   // Set the routes
-  server.route([...userController(con), ...authController(con)] as Array<Hapi.ServerRoute>);
+  server.route([...userController(con), ...authController(con), ...postController(con)] as Array<Hapi.ServerRoute>);
 
   await server.start().then(() => {
     console.log(

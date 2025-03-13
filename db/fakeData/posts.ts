@@ -17,8 +17,8 @@ export const fakePosts = async (con: DataSource) => {
       const content = faker.lorem.paragraphs();
       const title2 = faker.person.jobTitle();
       const content2 = faker.lorem.paragraphs();
-      const p: Partial<PostsEntity> = new PostsEntity(title, content, user);
-      const p2: Partial<PostsEntity> = new PostsEntity(title2, content2, user);
+      const p: Partial<PostsEntity> = new PostsEntity(title, content, user.id);
+      const p2: Partial<PostsEntity> = new PostsEntity(title2, content2, user.id);
 
       // Wait
       await postRepo.save<Partial<PostsEntity>>(p);

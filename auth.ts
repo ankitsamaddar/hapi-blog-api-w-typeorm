@@ -1,5 +1,5 @@
 import { DataSource, Repository } from "typeorm";
-import { Request, ResponseToolkit } from "@hapi/hapi";
+import { Request, ResponseToolkit, AuthCredentials } from "@hapi/hapi";
 import { UsersEntity } from "./db/entities";
 import { hash } from "bcryptjs";
 import "colors";
@@ -39,8 +39,8 @@ export const validateJWT = (con: DataSource) => {
       }
       delete user.password;
       delete user.salt;
-
-      return { isValid: true };
+      const cred = {user} as AuthCredentials;
+      return { isValid: true, credentials: cred};
     } catch (err) {
       console.error(`ERROR VALIDATING JWT`.red.bold, err);
     }

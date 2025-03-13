@@ -4,11 +4,11 @@ import { SharedProp } from './sharedProp.entity'
 
 @Entity({name: 'posts'})
 export class PostsEntity extends SharedProp {
-  constructor(title: string, content: string, user: UsersEntity) {
+  constructor(title: string, content: string, userId: number) {
     super();
     this.title = title;
     this.content = content;
-    this.user = user
+    this.userId = userId
   }
 
   @PrimaryGeneratedColumn()
