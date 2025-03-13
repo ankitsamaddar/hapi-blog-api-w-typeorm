@@ -5,7 +5,7 @@ import { get } from "node-emoji";
 import { initDb } from "./db";
 import { userController, authController } from "./controllers";
 import { DataSource } from "typeorm";
-import { validateBasic } from "./auth";
+import { validateBasic, validateJWT } from "./auth";
 
 const init = async () => {
   const server: Server = Hapi.server({
@@ -26,9 +26,14 @@ const init = async () => {
 
   // Register the plugins
   await server.register(require('@hapi/basic'));
+  await server.register(require('hapi-auth-jwt2'))
 
   // Auth strategy
   server.auth.strategy('simple', 'basic', {validate: validateBasic(con)})
+  server.auth.strategy("jwt", "jwt", {
+    key: "getSecretFromEnvHere",
+    validate: validateJWT(con)
+  });
 
   // Set the routes
   server.route([...userController(con), ...authController(con)] as Array<Hapi.ServerRoute>);

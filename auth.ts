@@ -2,6 +2,7 @@ import { DataSource, Repository } from "typeorm";
 import { Request, ResponseToolkit } from "@hapi/hapi";
 import { UsersEntity } from "./db/entities";
 import { hash } from "bcryptjs";
+import "colors";
 export const validateBasic = (con: DataSource) => {
   const userRepo: Repository<UsersEntity> = con.getRepository(UsersEntity);
   return async (
@@ -21,5 +22,27 @@ export const validateBasic = (con: DataSource) => {
     delete user.salt;
     // credentials - a credential objec passed back to the application in `request.auth.credentials`.
     return { isValid, credentials: user };
+  };
+};
+
+export const validateJWT = (con: DataSource) => {
+  const userRepo: Repository<UsersEntity> = con.getRepository(UsersEntity);
+  return async (
+    decoded: Partial<UsersEntity>,
+    request: Request,
+    h: ResponseToolkit
+  ) => {
+    try {
+      const user: UsersEntity = await userRepo.findOneBy({ id: Number(decoded.id) });
+      if (!user) {
+        return { isValid: false, credentials: null };
+      }
+      delete user.password;
+      delete user.salt;
+
+      return { isValid: true };
+    } catch (err) {
+      console.error(`ERROR VALIDATING JWT`.red.bold, err);
+    }
   };
 };

@@ -72,6 +72,11 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
           prev: prevPage,
         };
       },
+      options: {
+        auth: {
+          strategy: "jwt",
+        },
+      },
     },
     {
       method: "GET",
@@ -82,14 +87,13 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
         err?: Error
       ) => {
         try {
-          let u = await userRepo.findOneBy({id: Number(id)});
+          let u = await userRepo.findOneBy({ id: Number(id) });
           delete u.password;
           delete u.salt;
 
           return u;
-
-        } catch(err) {
-          console.error("Error fetching user", err)
+        } catch (err) {
+          console.error("Error fetching user", err);
         }
       },
     },
