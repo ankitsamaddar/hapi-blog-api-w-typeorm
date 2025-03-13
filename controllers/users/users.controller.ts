@@ -9,13 +9,13 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
       method: "GET",
       path: "/users",
       handler: async ({ query }: Request, h: ResponseToolkit, err?: Error) => {
-        let { perPage, page, ...q } = query;
+        let { limit, page, ...q } = query;
         let realPage: number; // Store the offset for the records in the database
         let realTake: number; // No. of records per page
         // Parse records per page
-        if (perPage) realTake = +perPage;
+        if (limit) realTake = +limit;
         else {
-          perPage = "10";
+          limit = "10";
           realTake = 10;
         }
         // Parse the current page and calculate the offset in database
@@ -44,13 +44,13 @@ export const userController = (con: DataSource): Array<ServerRoute> => {
         const totalPages = Math.ceil(totalRecords / realTake);
         const nextPage =
           +page < totalPages
-            ? `http://localhost:3000/users?perPage=${realTake}&page=${
+            ? `http://localhost:3000/users?limit=${realTake}&page=${
                 +page + 1
               }${qParams}`
             : null;
         const prevPage =
           +page > 1
-            ? `http://localhost:3000/users?perPage=${realTake}&page=${
+            ? `http://localhost:3000/users?limit=${realTake}&page=${
                 +page - 1
               }${qParams}`
             : null;
